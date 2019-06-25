@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!--componentScan 之前的包扫描  注意如果要配置include 要有 use-default-filters=false配置在先 -->
+    <!--<context:component-scan base-package="bean" use-default-filters="false">
+        <context:include-filter type="" expression="" />
+        <context:exclude-filter type="" expression="" />
+    </context:component-scan>-->
+
+
+    <!--注解配置之前的xml配置 配置为bean-->
+   <!-- <bean id="person" class="bean.Person" >
+        <property name="age" value="19" />
+        <property name="name" value="zhangsan" />
+    </bean>-->
+
+</beans>
