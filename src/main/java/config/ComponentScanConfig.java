@@ -23,11 +23,8 @@ import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 //                @ComponentScan.Filter(value = {Controller.class})
 //
 //        }
-        // 只包含对应的bean 注意配置includeFilters时要 配置不使用默认设置 useDefaultFilters = false
-        , includeFilters = {
-                @ComponentScan.Filter(type = ASSIGNABLE_TYPE,value = {ComponentScanDao.class})
-}
-, useDefaultFilters = false
+        // 只包含对应的bean 注意配置includeFilters时要 配置不使用默认设置 useDefaultFilters = false 这里是只包含 ComponentScanDao这个bean
+        , includeFilters = {@ComponentScan.Filter(type = ASSIGNABLE_TYPE,value = {ComponentScanDao.class})}, useDefaultFilters = false
 )
 public class ComponentScanConfig {
 }
