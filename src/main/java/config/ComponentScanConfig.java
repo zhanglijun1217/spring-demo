@@ -1,10 +1,13 @@
 package config;
 
 import componentAnno.ComponentScanDao;
+import config.typeFilter.MyERTypeFilter;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScans;
 import org.springframework.context.annotation.Configuration;
 
 import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
+import static org.springframework.context.annotation.FilterType.CUSTOM;
 
 /**
  * ComponentScan注解 来代替包扫描
@@ -15,7 +18,9 @@ import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
  * Created by zlj on 2019/6/25.
  */
 @Configuration // 配置类相当于配置文件
-@ComponentScan(
+@ComponentScans
+(
+        @ComponentScan(
         basePackages = "componentAnno"
 //        ,// 可以排除一些的bean
 //        excludeFilters = {
@@ -24,7 +29,15 @@ import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
 //
 //        }
         // 只包含对应的bean 注意配置includeFilters时要 配置不使用默认设置 useDefaultFilters = false 这里是只包含 ComponentScanDao这个bean
-        , includeFilters = {@ComponentScan.Filter(type = ASSIGNABLE_TYPE,value = {ComponentScanDao.class})}, useDefaultFilters = false
+        , includeFilters = {
+
+                // 扫描指定类型的类
+//                @ComponentScan.Filter(type = ASSIGNABLE_TYPE,value = {ComponentScanDao.class}),
+                // 扫描包含自定义（包含 ‘er’ 的类）
+                @ComponentScan.Filter(type = CUSTOM, value = {MyERTypeFilter.class})
+        }, useDefaultFilters = false
+        )
 )
+
 public class ComponentScanConfig {
 }
