@@ -1,0 +1,106 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### STS
+
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+# Built application files and Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Compiled class files
+*.class
+
+# Log Files
+*.log
+
+# About IntelliJ
+*.iml
+/.idea/
+/out/
+
+# BlueJ files
+*.ctxt
+
+### IntelliJ IDEA
+
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans
+
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+### Mac
+
+.DS_Store
+*.DS_Store
+
+### temp files
+
+logs/
+tree.txt
+data/
+dep.log
+boot-user-service-provider/mvnw
+boot-user-service-provider/mvnw.cmd
+boot-user-service-provider/HELP.md
+boot-user-service-provider/.mvn/wrapper/maven-wrapper.jar
+boot-user-service-provider/.mvn/wrapper/maven-wrapper.properties
+boot-user-service-provider/.mvn/wrapper/MavenWrapperDownloader.java
+boot-order-service-consumer/.mvn/wrapper/maven-wrapper.jar
+boot-order-service-consumer/.mvn/wrapper/maven-wrapper.properties
+boot-order-service-consumer/.mvn/wrapper/MavenWrapperDownloader.java
+boot-order-service-consumer/.gitignore
+boot-order-service-consumer/mvnw
+boot-order-service-consumer/mvnw.cmd
+# macOS
+.DS_Store
+
+# Package Files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# CMake
+cmake-build-debug/
+
+# File-based project format
+*.iws
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*

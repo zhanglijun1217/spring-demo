@@ -30,3 +30,14 @@
 CUSTOM，class就是实现了TypeFilter接口的实现类。
 ![](https://zlj1217-blog-image.oss-cn-hongkong.aliyuncs.com/MyERTypeFilter.png)
 - 如果在自定义Filter要扫描的bean在之前被别的Filter处理过，那么这个bean不会再被这个自定义Filter扫描到。
+
+### @Scope
+- spring ioc容器中的bean默认都是单例的，@Scope注解可以指定bean的作用范围。
+- @Scope可以取四个值：单例、多例、web环境下的request和session
+- 单例情况下，在ioc容器创建会调用bean创建方法；而在多实例的情况下，ioc容器启动不会调用创建方法创建对象，只有在获取bean的时候才会创建bean
+
+### @Lazy
+- 单实例bean在ioc容器启动的时候创建对象，也可以通过@Lazy做到懒加载，懒加载就是容器启动的时候不去创建bean对象，只有在第一次获取这个bean的时候
+再创建这个bean对象。
+
+### @Conditional

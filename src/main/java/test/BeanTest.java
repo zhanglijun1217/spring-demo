@@ -32,7 +32,7 @@ public class BeanTest {
     }
 
     @Test
-    public void testScope() {
+    public void testScopeAndLazy() {
 
         ApplicationContext context = new AnnotationConfigApplicationContext(ScopeConfig.class);
         System.out.println("spring环境初始化完成");
