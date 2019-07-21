@@ -156,3 +156,5 @@ public class ColorFactoryBean implements FactoryBean<Color> {
             System.out.println("colorFactoryBean对象是否相等 ：" + (factoryBean1 == factoryBean2));
        }
 ```
+test类的输出：
+![](https://zlj1217-blog-image.oss-cn-hongkong.aliyuncs.com/%E5%B7%A5%E5%8E%82bean%E8%BE%93%E5%87%BA.png)
