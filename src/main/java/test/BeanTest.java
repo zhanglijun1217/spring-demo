@@ -1,13 +1,17 @@
 package test;
 
 import bean.Person;
+import conditional.ConditionalConfig;
 import config.PersonConfig;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.env.Environment;
 import scope.Book;
 import scope.ScopeConfig;
+
+import java.util.Arrays;
 
 /**
  * Created by zlj on 2019/6/25.
@@ -41,5 +45,18 @@ public class BeanTest {
         Book book1 = context.getBean("book", Book.class);
 
         System.out.println(book == book1);
+    }
+
+    @Test
+    public void testConditional() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(ConditionalConfig.class);
+
+        // 当前的环境
+        Environment environment = context.getEnvironment();
+        String property = environment.getProperty("os.name");
+        System.out.println("当前的环境："+ property);
+
+        Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
+
     }
 }

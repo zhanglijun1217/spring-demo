@@ -41,3 +41,10 @@ CUSTOM，class就是实现了TypeFilter接口的实现类。
 再创建这个bean对象。
 
 ### @Conditional
+- @Conditional注解是配合初始化bean使用的，用处就是满足一定条件来控制bean的创建。@Conditional可以用在类上也可以用在方法上。当用在类上
+配合@Component使用，在方法上配合@Bean使用。
+- @Conditional的值是Condition接口数组，即可以配置多个Condition的实现类，作为bean初始化的组合条件。Condition接口中有match方法，实现其match方法即可
+配置bean的初始化条件。match方法的参数 ConditionContext 可以获取到很多上下文信息：
+![](https://zlj1217-blog-image.oss-cn-hongkong.aliyuncs.com/condition%E4%B8%8A%E4%B8%8B%E6%96%87.png)
+- @Conditional是Spring Boot底层使用很多的一个注解。
+- 这里的测试是根据当前运行环境系统的os.name来的，更改为别的可以通过修改junit的vm参数实现：-Dos.name=windows
