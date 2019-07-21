@@ -54,6 +54,7 @@ CUSTOM，class就是实现了TypeFilter接口的实现类。
 1. 包扫描+组件标注注解（@Controller/@Service/@Repository/@Component）这样的方式局限性在于只能注册自己写的类
 2. @Bean 经常用做导入第三方包的类作为bean，但是要在@Bean方法中实现这个初始化bean。
 3. @Import 快速给容器中导入一个bean组件
+4. 使用FactoryBean(工厂bean)初始化往容器中注册bean
 
 - @Import是一个类注解，value是一个class数组。支持导入@Configuration配置类，ImportSelector和ImportBeanDefinitionRegistrar，在4.2之后的版本
 也支持导入一个普通类。
@@ -103,5 +104,55 @@ public class ColorImportBeanDefinition implements ImportBeanDefinitionRegistrar 
 在@Import中导入这个ImportBeanDefinitionRegistrar接口实现类即可。可以看到因为刚才用ImportSelector注册进去了blue和yellow组件，所以
 现在容器中是有一个rainbow bean的：
 ![](https://zlj1217-blog-image.oss-cn-hongkong.aliyuncs.com/importBeanDefinition.png)
+#### FactoryBean接口
+Spring提供了FactoryBean去注册一个bean组件，当你实现了接口中的getObject、getType和isSingleton方法之后，就可以用@Bean在配置中注入一个工厂bean。
+Spring也有其他拓展了一些方法的FactoryBean接口，比如SmartFactoryBean。
+- 注意 虽然你在@Bean方法返回值返回的是FactoryBean，但当你在使用这个bean的时候，其实是你定义的FactoryBean中的泛型类对应的bean，而不是FactoryBean这个类型
+要想得到FactoryBean，可以通过获取bean名称为 &factoryBean的bean，即为真正bean对象的工厂bean对象。这个其实可以从BeanFactory类中看到这个工厂bean的前缀。
+```
+public class ColorFactoryBean implements FactoryBean<Color> {
 
-### 
+    @Override
+    public Color getObject() throws Exception {
+        System.out.println("ColorFactoryBean#方法被调用.......");
+        return new Color();
+    }
+
+    @Override
+    public Class<?> getObjectType() {
+        return Color.class;
+    }
+
+    @Override
+    public boolean isSingleton() {
+        // 单例
+        return true;
+    }
+}
+
+    @Bean
+    public ColorFactoryBean colorFactoryBean() {
+        // 这里使用了FactoryBean接口 虽然返回值是ColorFactoryBean，但其实注入容器中的bean是Color
+        System.out.println("调用BeanFactory#getObject方法 初始化colorFactoryBean");
+        return new ColorFactoryBean();
+    }
+    
+    test类
+        @Test
+        public void testFactoryBean() {
+            ApplicationContext context = new AnnotationConfigApplicationContext(ImportConfig.class);
+    
+            Color bean = context.getBean(Color.class);
+    
+            Object colorFactoryBean = context.getBean("colorFactoryBean");
+            // 单例 color bean对象
+            System.out.println("color bean对象是否相等："  + (bean == colorFactoryBean));
+    
+            // 获取color bean对象对应的 FactoryBean 这里bean的名称是 &colorFactoryBean
+            Object factoryBean1 = context.getBean(BeanFactory.FACTORY_BEAN_PREFIX + "colorFactoryBean");
+            // 用beanClass获取factoryBean 工厂bean
+            ColorFactoryBean factoryBean2 = context.getBean(ColorFactoryBean.class);
+            // &colorFactoryBean 为color对象的 工厂bean
+            System.out.println("colorFactoryBean对象是否相等 ：" + (factoryBean1 == factoryBean2));
+       }
+```

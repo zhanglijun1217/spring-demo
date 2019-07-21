@@ -1,10 +1,13 @@
 package test;
 
+import AnnoImport.Color;
 import AnnoImport.ImportConfig;
+import AnnoImport.factoryBean.ColorFactoryBean;
 import bean.Person;
 import conditional.ConditionalConfig;
 import config.PersonConfig;
 import org.junit.Test;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -67,5 +70,23 @@ public class BeanTest {
 
         Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
 
+    }
+
+    @Test
+    public void testFactoryBean() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(ImportConfig.class);
+
+        Color bean = context.getBean(Color.class);
+
+        Object colorFactoryBean = context.getBean("colorFactoryBean");
+        // 单例 color bean对象
+        System.out.println("color bean对象是否相等："  + (bean == colorFactoryBean));
+
+        // 获取color bean对象对应的 FactoryBean 这里bean的名称是 &colorFactoryBean
+        Object factoryBean1 = context.getBean(BeanFactory.FACTORY_BEAN_PREFIX + "colorFactoryBean");
+        // 用beanClass获取factoryBean 工厂bean
+        ColorFactoryBean factoryBean2 = context.getBean(ColorFactoryBean.class);
+        // &colorFactoryBean 为color对象的 工厂bean
+        System.out.println("colorFactoryBean对象是否相等 ：" + (factoryBean1 == factoryBean2));
     }
 }
