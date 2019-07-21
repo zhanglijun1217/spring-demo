@@ -48,3 +48,60 @@ CUSTOM，class就是实现了TypeFilter接口的实现类。
 ![](https://zlj1217-blog-image.oss-cn-hongkong.aliyuncs.com/condition%E4%B8%8A%E4%B8%8B%E6%96%87.png)
 - @Conditional是Spring Boot底层使用很多的一个注解。
 - 这里的测试是根据当前运行环境系统的os.name来的，更改为别的可以通过修改junit的vm参数实现：-Dos.name=windows
+
+### @Import
+回顾下给容器中注册bean组件的方法：
+1. 包扫描+组件标注注解（@Controller/@Service/@Repository/@Component）这样的方式局限性在于只能注册自己写的类
+2. @Bean 经常用做导入第三方包的类作为bean，但是要在@Bean方法中实现这个初始化bean。
+3. @Import 快速给容器中导入一个bean组件
+
+- @Import是一个类注解，value是一个class数组。支持导入@Configuration配置类，ImportSelector和ImportBeanDefinitionRegistrar，在4.2之后的版本
+也支持导入一个普通类。
+下面是@Import使用的三种方式：
+（1）导入的普通类，可以看到导入的bean名称默认为全类名
+![](https://zlj1217-blog-image.oss-cn-hongkong.aliyuncs.com/WX20190721-182711.png)
+（2）使用ImportSelector。ImportSelector是一个接口，其中的selectImports方法返回应该导入容器中bean组件的全类名称数组，参数是AnnotationMetadata，即为
+注解的相关信息，包括配合@Import使用的@Configuration注解信息。另外实现接口的这个方法不要返回null，spring会调用数组长度，会有NPE出现。实现好自己的Import
+Selector之后，在@Import中注入即可。比如这里我还想通过selector的方式去得到新的颜色组件，可以这样将全类名返回即可：
+```
+public class ColorImportSelector implements ImportSelector {
+
+    @Override
+    public String[] selectImports(AnnotationMetadata importingClassMetadata) {
+
+        return new String[]{"AnnoImport.Blue", "AnnoImport.Yellow"};
+    }
+}
+```
+当前配置中的bean组件：
+![](https://zlj1217-blog-image.oss-cn-hongkong.aliyuncs.com/ImportSelector.png)
+ImportSelector也是Spring Boot中用到的很多的一个接口。
+（3）导入ImportBeanDefinitionRegistrar
+通过实现ImportBeanDefinitionRegistrar接口，可以为bean定义注册器中注册一个bean的定义，从而实现向spring环境中导入bean。
+ImportBeanDefinitionRegistrar接口中有一个registerBeanDefinitions方法，其中参数有一个BeanDefinitionRegistry，这个接口中的
+registerBeanDefinition方法即可注册bean。下面代码示例 通过实现ImportBeanDefinitionRegistrar接口来达到注册rainbow bean组件的功能
+```$java
+public class ColorImportBeanDefinition implements ImportBeanDefinitionRegistrar {
+
+    @Override
+    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+
+        boolean blue = registry.containsBeanDefinition("AnnoImport.Blue");
+        boolean yellow = registry.containsBeanDefinition("AnnoImport.Yellow");
+
+        // 如果容器中有blue和yellow组件 初始化一个rainbow bean
+        if (blue && yellow) {
+            // 初始化一个bean定义 
+            RootBeanDefinition beanDefinition = new RootBeanDefinition(Rainbow.class);
+            // 通过调用BeanDefinitionRegistry#registerBeanDefinition 方法注册一个组件
+            registry.registerBeanDefinition("raimbow", beanDefinition);
+        }
+    }
+}
+
+```
+在@Import中导入这个ImportBeanDefinitionRegistrar接口实现类即可。可以看到因为刚才用ImportSelector注册进去了blue和yellow组件，所以
+现在容器中是有一个rainbow bean的：
+![](https://zlj1217-blog-image.oss-cn-hongkong.aliyuncs.com/importBeanDefinition.png)
+
+### 

@@ -1,5 +1,6 @@
 package test;
 
+import AnnoImport.ImportConfig;
 import bean.Person;
 import conditional.ConditionalConfig;
 import config.PersonConfig;
@@ -55,6 +56,14 @@ public class BeanTest {
         Environment environment = context.getEnvironment();
         String property = environment.getProperty("os.name");
         System.out.println("当前的环境："+ property);
+
+        Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
+
+    }
+
+    @Test
+    public void testImport() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(ImportConfig.class);
 
         Arrays.stream(context.getBeanDefinitionNames()).forEach(System.out::println);
 
