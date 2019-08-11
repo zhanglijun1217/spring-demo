@@ -14,9 +14,17 @@
 
 
     <!--注解配置之前的xml配置 配置为bean-->
-   <!-- <bean id="person" class="bean.Person" >
+    <!--<bean id="person" class="bean.Person" >
         <property name="age" value="19" />
         <property name="name" value="zhangsan" />
     </bean>-->
+
+    <!--property赋值-->
+    <!--如果要使用配置文件中的变量赋值，需要指定配置文件-->
+    <context:property-placeholder location="application.properties" file-encoding="utf-8" />
+    <bean id = "valueBean" class="value.ValueBean">
+        <property name="age" value="${valueBean.age}"/>
+        <property name="name" value="${valueBean.name}" />
+    </bean>
 
 </beans>

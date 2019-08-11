@@ -197,3 +197,50 @@ bean的生命周期也就是bean的构建、初始化、和销毁。而管理bea
     - AsyncAnnotationBeanPostProcessor 对我们比较熟悉的@Async注解的一个支持
     - BeanValidationPostProcessor bean校验的后置处理器
     - AutowiredAnnotationBeanPostProcessor 是autowired注入bean实例的后置处理器。
+    
+## @Value 和 @PropertySource
+可以用@Value给bean中的变量赋值，相当于之前xml配置bean的property标签。
+@Value可以使用三种形式的变量赋值：
+- 直接赋值，比如：
+```
+    <bean id = "valueBean" class="value.ValueBean">
+        <property name="age" value="18"/>
+        <property name="name" value="张三" />
+    </bean>
+```
+这里也可以在bean对象的属性中加入@Value("18")来指定值
+- 匹配SPEL表达式
+比如 @Value("#{18-2}")
+- 从配置文件中读取
+``` xml
+ <!--如果要使用配置文件中的变量赋值，需要指定配置文件-->
+    <context:property-placeholder location="application.properties" file-encoding="utf-8" />
+    <bean id = "valueBean" class="value.ValueBean">
+        <property name="age" value="${valueBean.age}"/>
+        <property name="name" value="${valueBean.name}" />
+    </bean>
+```
+这里看到了如果是xml配置，要配置对应的配置文件路径，用@Value也是一样，这里spring提供了@PropertySource注解来指定。
+如：
+```java
+@Configuration
+@PropertySource(value = "application.properties", encoding = "utf-8")
+public class ValuePropertiesConfig {
+
+    @Bean
+    public ValueBean valueBean() {
+        return new ValueBean();
+    }
+}
+```
+```java
+@Data
+@ToString
+public class ValueBean {
+
+    @Value(value = "${valueBean.name}")
+    private String name;
+    @Value(value = "${valueBean.age}")
+    private Integer age;
+}
+```
