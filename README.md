@@ -158,3 +158,42 @@ public class ColorFactoryBean implements FactoryBean<Color> {
 ```
 test类的输出：
 ![](https://zlj1217-blog-image.oss-cn-hongkong.aliyuncs.com/%E5%B7%A5%E5%8E%82bean%E8%BE%93%E5%87%BA.png)
+
+
+### bean的生命周期
+bean的生命周期也就是bean的构建、初始化、和销毁。而管理bean的生命周期指的是容器bean可以调用我们自定义的初始化和销毁方法。
+其实还有一些对一些特殊接口的判断和context初始化的过程：https://www.cnblogs.com/davidwang456/p/5632832.html
+
+1. bean的构建：
+- 单例bean是在容器启动的时候创建的
+- 多例bean是在每次获取的时候创建的
+
+2. bean的初始化
+- bean构建完成，并且赋值完之后，再进行bean初始化
+
+3. bean的销毁
+- 单例bean，在容器关闭的时候自动销毁
+- 多例bean，容器不会自动调用其销毁方法进行销毁。
+
+#### 管理bean方式：
+1. bean标签或者@Bean中的init-method和destroy-method
+2. 使用InitializingBean接口中的方法定义bean初始化且属性被设置之后的事情，使用DisposableBean接口中的方法来定义bean销毁时做的事情。
+    - 注意这里和@Bean之中的init-method和destroy-method的顺序是 InitializingBean和DisposableBean接口 早于 init-method和destroy-method方法执行。
+3. 可以使用JSR250规范中的两个注解: @PostConstruct 和 @PreDestroy
+    - 注意这里的顺序是 @PostConstruct 和 @PreDestroy 定义的初始化和销毁方法是早于InitializingBean和DisposableBean接口
+4. spring提供了一个管理bean的bean后置处理器接口：BeanPostProcessor接口，这个接口中的两个方法：
+    - postProcessBeforeInitialization：在Init之前（接口注释上说明了这里的init比如是InitializingBean接口中的方法或者@Bean中的init-method方法）的处理
+    - postProcessAfterInitialization：在Init之后的处理
+    
+    这里可以简答记录下bean后置处理器的一个原理：
+    在跟到`org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(java.lang.String, java.lang.Object, org.springframework.beans.factory.support.RootBeanDefinition)`
+    方法的时候（这个方法是在设置完bean的相关属性之后执行的），处理了所有的beanPostProcessor，初始化方法之前后初始化方法之后的处理是相同的，都是循环当前的beanPostProcessor的实现类，
+    然后调用其before和after方法。
+    ![](https://zlj1217-blog-image.oss-cn-hongkong.aliyuncs.com/bean%E5%90%8E%E7%BD%AE%E5%A4%84%E7%90%86%E5%99%A8.png)
+    其实在spring中也有beanPostProcessor的一些实现，可以看到接口的实现很多：
+    ![](https://zlj1217-blog-image.oss-cn-hongkong.aliyuncs.com/bean%E5%90%8E%E7%BD%AE%E5%A4%84%E7%90%86%E5%99%A8%E5%9C%A8spring%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8.png)
+    这里可以对几个做一个简单说明：
+    - ApplicationContextAwareProcessor 是对实现接口ApplicationContextAware接口的bean做注入容器的处理。
+    - AsyncAnnotationBeanPostProcessor 对我们比较熟悉的@Async注解的一个支持
+    - BeanValidationPostProcessor bean校验的后置处理器
+    - AutowiredAnnotationBeanPostProcessor 是autowired注入bean实例的后置处理器。
