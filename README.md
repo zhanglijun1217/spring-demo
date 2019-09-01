@@ -244,3 +244,24 @@ public class ValueBean {
     private Integer age;
 }
 ```
+
+## 自动装配
+自动装配就是spring框架根据DI和容器中组件的依赖关系，来装配各个组件并且赋值的过程
+### @Autowired
+- autowired注入的组件默认优先按照类型去注入依赖的组件，可以理解为application.getBean(class)
+- 如果容器中一个类型有多实例bean,默认用id（一般不指定即为首字母小写类名）去注意依赖bean，即可以理解为application.getBean("beanName")
+- 如果容器中一个类型有多实例bean，注入的时候也可以根据Qualifier注解去指定要注入的bean
+- autowired默认check属性的赋值，也可以通过required属性为false来设置不需要依赖属性值的注入
+- 如果容器中一个类型有多实例bean，也可以在指定一个bean上用Primary注解设置优先注入的bean（与Qualifier互斥）``
+
+#### @Autowired非属性注入
+可以看到@Autowired注解不仅仅可以用到属性上进行自动装配注入，也可以标注在构造器、方法、属性、方法参数
+
+### @Resource和@Inject
+Spring框架还支持@Resource(JSR250)和@Inject(JSR330)这两个注解实现自动注入
+- @Resource是默认优先根据name去注入bean的
+- @Resource是java规范中的注解，可以根据name属性去指定要注入的bean(如果多实例的话)，但是不支持和@Primary和@Qualifier注解
+- @Inject需要导入javax.inject的包，这里通过inject可以支持Primary注解。
+
+### 利用Aware引用spring组件
+
