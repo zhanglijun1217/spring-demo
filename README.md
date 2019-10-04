@@ -1,4 +1,6 @@
-## 注解驱动
+# Spring注解驱动
+
+## IOC
 
 ### @Bean
 - 相当于xml中的bean标签，要在配置类中（@Configuration）使用声明一个bean。
@@ -264,4 +266,23 @@ Spring框架还支持@Resource(JSR250)和@Inject(JSR330)这两个注解实现自
 - @Inject需要导入javax.inject的包，这里通过inject可以支持Primary注解。
 
 ### 利用Aware引用spring组件
+如果自定义组件想使用spring框架中的组件（比如Application 比如BeanFactory），这里都是依赖Aware接口下的一些接口实现。
+- 自定义组件实现XxxAware：在创建对象的时候，会调用接口规定的方法注入相关组件。 
+- Xxxaware接口提供的功能 都有一个对应的processor去实现 比如ApplicationContextAware ==》 ApplicationContextAwareProcessor；  
+  而比较简单的逻辑 比如BeanNameAware 在 org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory 抽象类中就进行了完成。
+  
+### Spring中的profile
+@Profile注解：指定组件在哪个环境中才被注入到容器中。
+- 加了profile标识的bean，只有在对应的环境中被加载。默认是default环境
+- 没有加profile注解标识的bean，任何环境都能被加载到
+- @Profile可以加在配置类config上，这样这个config只会在指定的profile环境下才被加载
 
+改变运行环境的profile:
+1. 在jvm启动的时候加上运行参数 `-Dspring.profiles.active=test`
+2. 这里在测试类中都是AnnotationApplicationContext的有参数构造函数去初始化的，这里可以通过无参构造函数去先创建一个application，再通过api设置进去配置类和profiles
+3. 启动类上@ActiveProfiles注解指定（比如spring boot的启动类）
+4. 在读的配置文件中（这里是db.properties）指定 spring.profiles.active 的值，来标记对应的环境
+可以看看@Profile类中的注释
+![](https://zlj1217-blog-image.oss-cn-hongkong.aliyuncs.com/profile%E8%AE%BE%E7%BD%AE.png)
+
+## AOP
